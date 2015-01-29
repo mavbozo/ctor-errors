@@ -3,7 +3,7 @@
             [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
             [io.pedestal.http.route.definition :refer [defroutes]]
-            [io.pedestal.interceptor.helpers :refer [defbefore]]
+            [io.pedestal.interceptor.helpers :as helpers]
             [ring.util.response :as ring-resp]))
 
 (defn about-page
@@ -17,9 +17,10 @@
   (ring-resp/response "Hello World!"))
 
 
-(defbefore my-page
-  [ctx]
-  (assoc ctx :response (ring-resp/response "this is my page")))
+(def my-page
+  (helpers/before
+   ::my-page
+   (fn [ctx] (assoc ctx :response (ring-resp/response "this is my page")))))
 
 (defroutes routes
   [[["/" {:get home-page}
